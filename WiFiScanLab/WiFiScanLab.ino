@@ -4,7 +4,7 @@
 
 const char *SSID = "GA20s";
 const char *PASSWORD = "anud1237";
-const char *mqttBroker = "test.mosquitto.org";
+const char *mqttBroker = "broker.hivemq.com";
 const int mqttPort = 1883;
 const char *mqttClientID = "Esp32_group07_2";
 const char *Topic = "Group071";
@@ -82,10 +82,9 @@ void loop() {
     JsonArray jsonArray = doc.to<JsonArray>();
 
     // Iterate through the scanned networks
-    for (int8_t i = 0; i < scanResult; i++) {
-      if (i==4){
-        break;
-      }
+    //for (int8_t i = 0; i < scanResult; i++) {
+    for (int8_t i = 0; i < 4; i++) {
+      
       WiFi.getNetworkInfo(i, ssid, encryptionType, rssi, bssid, channel, hidden);
 
       String rssiString = String(rssi);
@@ -106,9 +105,15 @@ void loop() {
       reconnect();
     }
     // Publish the JSON data
-    client.publish(Topic, jsonString.c_str(), 2);
+    int messageLength = jsonString.length();
+    Serial.println(jsonString);    
+    Serial.println("Message length: " + String(messageLength) + " bytes");
+    client.publish(Topic, jsonString.c_str(), 0);
     client.loop();
-    Serial.println(jsonString);            
+    delay(5000);
+    
+    
+                
     
 
     
